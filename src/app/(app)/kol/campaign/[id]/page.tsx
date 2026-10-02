@@ -65,14 +65,14 @@ export default async function CkPage({ params }: { params: Promise<{ id: string 
 
       <div>
         <div className="flex flex-wrap items-center gap-2"><KolStageBadge stage={ck.stage} /><TeamLabel team={team} /><span className="text-sm text-muted">PIC: <b className="text-ink">{ck.picName || "-"}</b></span></div>
-        <h1 className="mt-2 text-2xl font-bold tracking-tight">
-          <Link href={`/kol/${ck.kolId}`} className="hover:text-brand-600">{ck.kolName}</Link> <span className="text-lg font-medium text-muted">{ck.kolHandle}</span>
-        </h1>
+        <div className="mt-2 flex flex-wrap items-center gap-2.5">
+          <h1 className="text-2xl font-bold tracking-tight">
+            <Link href={`/kol/${ck.kolId}`} className="hover:text-brand-600">{ck.kolName}</Link> <span className="text-lg font-medium text-muted">{ck.kolHandle}</span>
+          </h1>
+          <WhatsAppButton name={ck.kolName} phone={kolPhone} message={`Hai ${ck.kolName}, saya ${user.name}${team ? ` dari ${team.name}` : ""} berkenaan campaign ${ck.campaignName}.`} />
+        </div>
         <p className="mt-1 text-sm font-semibold text-brand-700">{ck.collabType}</p>
         <p className="mt-1 text-sm">Campaign: <Link href={`/campaigns/${ck.campaignId}`} className="font-semibold text-brand-600 hover:underline">{ck.campaignName}</Link></p>
-        <div className="mt-3">
-          <WhatsAppButton phone={kolPhone} message={`Hai ${ck.kolName}, saya ${user.name}${team ? ` dari ${team.name}` : ""} berkenaan campaign ${ck.campaignName}.`} />
-        </div>
       </div>
 
       {overdue && (
