@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { formatPhone, kolWhatsapp } from "@/lib/domain/whatsapp";
 import { useState } from "react";
 import { LoaderCircle, Plus, Save, Trash2 } from "lucide-react";
 import { KOL_STATUSES, type Kol, type Team } from "@/lib/domain/types";
@@ -39,6 +40,10 @@ export function KolForm({ kol, teams, isAdmin, defaultTeamId, platforms, niches 
     niches: kol?.niches ?? ([] as string[]),
     location: kol?.location ?? "",
     contact: kol?.contact ?? "",
+    whatsapp: (() => {
+      const n = kol ? kolWhatsapp(kol) : null;
+      return n ? formatPhone(n) : "";
+    })(),
     rate: kol ? senToInput(kol.rateSen) : "",
     status: kol?.status ?? "Aktif",
     remark: kol?.remark ?? "",
@@ -127,8 +132,11 @@ export function KolForm({ kol, teams, isAdmin, defaultTeamId, platforms, niches 
         <Field id="k-loc" label="Lokasi" error={fe.location}>
           <input id="k-loc" className="input" value={v.location} onChange={(e) => setV({ ...v, location: e.target.value })} />
         </Field>
-        <Field id="k-contact" label="Contact" error={fe.contact}>
-          <input id="k-contact" className="input" placeholder="No. telefon / email / pengurus" value={v.contact} onChange={(e) => setV({ ...v, contact: e.target.value })} />
+        <Field id="k-wa" label="No. WhatsApp" error={fe.whatsapp}>
+          <input id="k-wa" className="input tabular-nums" inputMode="tel" placeholder="012-345 6789" value={v.whatsapp} onChange={(e) => setV({ ...v, whatsapp: e.target.value })} />
+        </Field>
+        <Field id="k-contact" label="Contact lain" error={fe.contact}>
+          <input id="k-contact" className="input" placeholder="Email / pengurus / agensi" value={v.contact} onChange={(e) => setV({ ...v, contact: e.target.value })} />
         </Field>
         <Field id="k-rate" label="Rate biasa (RM)" error={fe.rate}>
           <input id="k-rate" className="input tabular-nums" inputMode="decimal" value={v.rate} onChange={(e) => setV({ ...v, rate: e.target.value })} />
