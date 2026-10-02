@@ -11,6 +11,9 @@ import { StatCard } from "@/components/StatCard";
 import { TeamLabel } from "@/components/badges";
 import { KolStageBadge, Money } from "@/components/finance";
 import { Checklist } from "@/components/kol/Checklist";
+import { WhatsAppButton } from "@/components/kol/WhatsAppButton";
+import { kolWhatsapp } from "@/lib/domain/whatsapp";
+import { listKols } from "@/lib/server/services/kols";
 
 export const metadata = { title: "Tracker posting KOL" };
 
@@ -43,7 +46,8 @@ export default async function KolTrackerPage({ searchParams }: { searchParams: P
   }
 
   const today = todayMYT();
-  const all = await listCksForScope(user, scope);
+  const [all, kols] = await Promise.all([listCksForScope(user, scope), listKols()]);
+  const phoneOf = new Map(kols.map((k) => [k.id, kolWhatsapp(k)]));
   const stageKey = sp.stage && FILTERS[sp.stage] ? sp.stage : "aktif";
   const q = (sp.q ?? "").trim().toLowerCase().replace(/^@/, "");
   const rows = all.filter(
@@ -93,6 +97,7 @@ export default async function KolTrackerPage({ searchParams }: { searchParams: P
                   <td>
                     <Link href={`/kol/campaign/${c.id}`} className="font-semibold hover:text-brand-600">{c.kolName}</Link>
                     <p className="text-xs text-muted">{c.kolHandle} · {c.platform} · PIC {c.picName || "-"}</p>
+                    <div className="my-1"><WhatsAppButton compact phone={phoneOf.get(c.kolId) ?? null} message={`Hai ${c.kolName}, saya ${user.name} berkenaan campaign ${c.campaignName}.`} /></div>
                     <p className="text-xs font-medium text-brand-700">{c.collabType}{c.collabType === "Hantar produk (seeding)" && c.details.shipStatus ? ` · ${c.details.shipStatus}` : ""}</p>
                   </td>
                   <td className="text-sm">
