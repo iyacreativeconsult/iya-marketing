@@ -422,7 +422,7 @@ function seedFinance(db: DemoDb, campaignIds: Map<string, string>) {
   ];
   for (const k of kols) {
     const { id, owner, ...rest } = k;
-    db.collection("kols").doc(id)._set({ ...rest, contact: "012-345 6789", status: "Aktif", remark: "", ownerTeamId: owner, createdBy: "demo-admin", createdByName: "Aisyah (Admin)", createdAt: now, updatedAt: now, version: 1, deleted: false });
+    db.collection("kols").doc(id)._set({ ...rest, contact: "", whatsapp: "60123456789", status: "Aktif", remark: "", ownerTeamId: owner, createdBy: "demo-admin", createdByName: "Aisyah (Admin)", createdAt: now, updatedAt: now, version: 1, deleted: false });
     db.collection("kol_private").doc(id)._set({ bankName: "Maybank", accountNo: "1234 5678 9012", accountName: rest.realName, updatedAt: now });
   }
 
