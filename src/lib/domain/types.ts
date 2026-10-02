@@ -173,6 +173,8 @@ export interface Kol {
   niches: string[];
   location: string;
   contact: string;
+  /** No. WhatsApp dalam bentuk 60123456789 ("" jika tiada). */
+  whatsapp: string;
   rateSen: number;
   status: KolStatus;
   remark: string;
