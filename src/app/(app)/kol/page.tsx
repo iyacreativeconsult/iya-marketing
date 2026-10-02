@@ -87,9 +87,11 @@ export default async function KolListPage({ searchParams }: { searchParams: Prom
             {kols.map((k) => (
               <tr key={k.id} className="hover:bg-brand-50/40">
                 <td>
-                  <Link href={`/kol/${k.id}`} className="font-semibold hover:text-brand-600">{k.name}</Link>
+                  <div className="whitespace-nowrap">
+                    <Link href={`/kol/${k.id}`} className="font-semibold hover:text-brand-600">{k.name}</Link>
+                    <WhatsAppButton compact className="ml-1.5 align-[-5px]" name={k.name} phone={kolWhatsapp(k)} message={`Hai ${k.name}, saya ${user.name}.`} />
+                  </div>
                   {k.realName && <p className="text-xs text-muted">{k.realName}</p>}
-                  <div className="mt-1.5"><WhatsAppButton compact phone={kolWhatsapp(k)} message={`Hai ${k.name}, saya ${user.name}.`} /></div>
                 </td>
                 <td><SocialLinks accounts={k.accounts} /></td>
                 <td className="text-sm">{k.niches.join(", ") || "-"}<p className="text-xs text-muted">{k.location}</p></td>
