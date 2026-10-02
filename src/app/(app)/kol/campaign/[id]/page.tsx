@@ -1,3 +1,6 @@
+import { WhatsAppButton } from "@/components/kol/WhatsAppButton";
+import { kolWhatsapp } from "@/lib/domain/whatsapp";
+import { getKol } from "@/lib/server/services/kols";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, TriangleAlert } from "lucide-react";
@@ -54,6 +57,8 @@ export default async function CkPage({ params }: { params: Promise<{ id: string 
   const remaining = (ck.feeSen ?? 0) - (ck.requestedSen ?? 0);
   const canRequest = finance && ["Confirmed", "Content Brief Sent", "Content Submitted", "Approved", "Payment Pending"].includes(ck.stage);
 
+  const kolPhone = kolWhatsapp((await getKol(ck.kolId)) ?? {});
+
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <Link href="/kol/tracker" className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"><ArrowLeft className="size-4" /> Tracker KOL</Link>
@@ -65,6 +70,9 @@ export default async function CkPage({ params }: { params: Promise<{ id: string 
         </h1>
         <p className="mt-1 text-sm font-semibold text-brand-700">{ck.collabType}</p>
         <p className="mt-1 text-sm">Campaign: <Link href={`/campaigns/${ck.campaignId}`} className="font-semibold text-brand-600 hover:underline">{ck.campaignName}</Link></p>
+        <div className="mt-3">
+          <WhatsAppButton phone={kolPhone} message={`Hai ${ck.kolName}, saya ${user.name}${team ? ` dari ${team.name}` : ""} berkenaan campaign ${ck.campaignName}.`} />
+        </div>
       </div>
 
       {overdue && (
