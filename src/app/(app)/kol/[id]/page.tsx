@@ -10,6 +10,8 @@ import { formatDateMs } from "@/lib/domain/dates";
 import { formatSen } from "@/lib/domain/money";
 import { TeamLabel } from "@/components/badges";
 import { KolStageBadge, Money, SocialLinks } from "@/components/finance";
+import { WhatsAppButton } from "@/components/kol/WhatsAppButton";
+import { formatPhone, kolWhatsapp } from "@/lib/domain/whatsapp";
 import { KolPrivateForm } from "@/components/kol/KolPrivateForm";
 import { AuditTimeline } from "@/components/AuditTimeline";
 import { DeleteControl } from "@/components/DeleteControl";
@@ -35,7 +37,8 @@ export default async function KolDetailPage({ params }: { params: Promise<{ id: 
           <p className="mt-1 text-sm text-muted">{[kol.realName, kol.niches.join(", "), kol.location].filter(Boolean).join(" · ")}</p>
           <div className="mt-3"><SocialLinks accounts={kol.accounts} /></div>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <WhatsAppButton phone={kolWhatsapp(kol)} message={`Hai ${kol.name}, saya ${user.name}.`} />
           {canEditKol(user, kol) && <Link href={`/kol/${kol.id}/edit`} className="btn-secondary"><Pencil className="size-4" /> Ubah profil</Link>}
           {user.role === "admin" && <DeleteControl mode="direct" what={`KOL "${kol.name}"`} confirmText={kol.name} url={`/api/kols/${kol.id}`} redirectTo="/kol" />}
           {user.role !== "admin" && canEditKol(user, kol) && <DeleteControl mode="request" what={`KOL "${kol.name}"`} entity="kol" entityId={kol.id} />}
@@ -49,7 +52,8 @@ export default async function KolDetailPage({ params }: { params: Promise<{ id: 
             <Info label="Rate biasa">{kol.rateSen ? formatSen(kol.rateSen) : "-"}</Info>
             <Info label="Campaign">{cks.length}</Info>
             <Info label="Posting tepat masa">{posted ? `${onTime}/${posted}` : "-"}</Info>
-            <Info label="Contact">{kol.contact || "-"}</Info>
+            <Info label="WhatsApp">{kolWhatsapp(kol) ? formatPhone(kolWhatsapp(kol)!) : "-"}</Info>
+            <Info label="Contact lain">{kol.contact || "-"}</Info>
             <Info label="Team pemilik"><TeamLabel team={teamById.get(kol.ownerTeamId)} /></Info>
             <div className="sm:col-span-2"><Info label="Catatan"><span className="whitespace-pre-wrap">{kol.remark || "-"}</span></Info></div>
           </section>
