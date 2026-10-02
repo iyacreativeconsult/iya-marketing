@@ -10,6 +10,8 @@ import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
 import { TeamLabel } from "@/components/badges";
 import { SocialLinks } from "@/components/finance";
+import { WhatsAppButton } from "@/components/kol/WhatsAppButton";
+import { kolWhatsapp } from "@/lib/domain/whatsapp";
 
 export const metadata = { title: "Senarai KOL" };
 
@@ -29,7 +31,11 @@ export default async function KolListPage({ searchParams }: { searchParams: Prom
       (!sp.status || sp.status === "all" || k.status === sp.status) &&
       (!sp.niche || sp.niche === "all" || k.niches.includes(sp.niche)) &&
       (!loc || k.location.toLowerCase().includes(loc)) &&
-      (!q || k.name.toLowerCase().includes(q) || k.realName.toLowerCase().includes(q) || k.accounts.some((a) => a.username.toLowerCase().includes(q))),
+      (!q ||
+        k.name.toLowerCase().includes(q) ||
+        k.realName.toLowerCase().includes(q) ||
+        k.accounts.some((a) => a.username.toLowerCase().includes(q)) ||
+        (q.replace(/\D/g, "").length >= 4 && (kolWhatsapp(k) ?? "").includes(q.replace(/\D/g, "").replace(/^0/, "")))),
   );
   const filtered = kols.length !== all.length;
 
@@ -49,7 +55,7 @@ export default async function KolListPage({ searchParams }: { searchParams: Prom
       </div>
 
       <form method="get" className="card grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-[1fr_150px_150px_150px_150px_auto]">
-        <input name="q" defaultValue={sp.q ?? ""} placeholder="Cari nama atau @username" className="input" aria-label="Cari" />
+        <input name="q" defaultValue={sp.q ?? ""} placeholder="Cari nama, @username atau no. telefon" className="input" aria-label="Cari" />
         <select name="niche" defaultValue={sp.niche ?? "all"} className="input" aria-label="Niche">
           <option value="all">Semua niche</option>
           {lists.niches.map((n) => <option key={n}>{n}</option>)}
@@ -83,6 +89,7 @@ export default async function KolListPage({ searchParams }: { searchParams: Prom
                 <td>
                   <Link href={`/kol/${k.id}`} className="font-semibold hover:text-brand-600">{k.name}</Link>
                   {k.realName && <p className="text-xs text-muted">{k.realName}</p>}
+                  <div className="mt-1.5"><WhatsAppButton compact phone={kolWhatsapp(k)} message={`Hai ${k.name}, saya ${user.name}.`} /></div>
                 </td>
                 <td><SocialLinks accounts={k.accounts} /></td>
                 <td className="text-sm">{k.niches.join(", ") || "-"}<p className="text-xs text-muted">{k.location}</p></td>
