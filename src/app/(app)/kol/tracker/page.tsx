@@ -95,9 +95,11 @@ export default async function KolTrackerPage({ searchParams }: { searchParams: P
               return (
                 <tr key={c.id} className={`hover:bg-brand-50/40 ${late ? "bg-red-50/40" : ""}`}>
                   <td>
-                    <Link href={`/kol/campaign/${c.id}`} className="font-semibold hover:text-brand-600">{c.kolName}</Link>
+                    <div className="whitespace-nowrap">
+                      <Link href={`/kol/campaign/${c.id}`} className="font-semibold hover:text-brand-600">{c.kolName}</Link>
+                      <WhatsAppButton compact className="ml-1.5 align-[-5px]" name={c.kolName} phone={phoneOf.get(c.kolId) ?? null} message={`Hai ${c.kolName}, saya ${user.name} berkenaan campaign ${c.campaignName}.`} />
+                    </div>
                     <p className="text-xs text-muted">{c.kolHandle} · {c.platform} · PIC {c.picName || "-"}</p>
-                    <div className="my-1"><WhatsAppButton compact phone={phoneOf.get(c.kolId) ?? null} message={`Hai ${c.kolName}, saya ${user.name} berkenaan campaign ${c.campaignName}.`} /></div>
                     <p className="text-xs font-medium text-brand-700">{c.collabType}{c.collabType === "Hantar produk (seeding)" && c.details.shipStatus ? ` · ${c.details.shipStatus}` : ""}</p>
                   </td>
                   <td className="text-sm">
