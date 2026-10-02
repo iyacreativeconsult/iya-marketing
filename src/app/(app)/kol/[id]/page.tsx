@@ -33,12 +33,14 @@ export default async function KolDetailPage({ params }: { params: Promise<{ id: 
       <Link href="/kol" className="inline-flex items-center gap-1 text-sm text-muted hover:text-ink"><ArrowLeft className="size-4" /> Senarai KOL</Link>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">{kol.name}</h1>
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-2xl font-bold tracking-tight">{kol.name}</h1>
+            <WhatsAppButton name={kol.name} phone={kolWhatsapp(kol)} message={`Hai ${kol.name}, saya ${user.name}.`} />
+          </div>
           <p className="mt-1 text-sm text-muted">{[kol.realName, kol.niches.join(", "), kol.location].filter(Boolean).join(" · ")}</p>
           <div className="mt-3"><SocialLinks accounts={kol.accounts} /></div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          <WhatsAppButton phone={kolWhatsapp(kol)} message={`Hai ${kol.name}, saya ${user.name}.`} />
           {canEditKol(user, kol) && <Link href={`/kol/${kol.id}/edit`} className="btn-secondary"><Pencil className="size-4" /> Ubah profil</Link>}
           {user.role === "admin" && <DeleteControl mode="direct" what={`KOL "${kol.name}"`} confirmText={kol.name} url={`/api/kols/${kol.id}`} redirectTo="/kol" />}
           {user.role !== "admin" && canEditKol(user, kol) && <DeleteControl mode="request" what={`KOL "${kol.name}"`} entity="kol" entityId={kol.id} />}
