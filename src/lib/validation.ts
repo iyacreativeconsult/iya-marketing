@@ -5,6 +5,7 @@
 import { z } from "zod";
 import { BANK_STATUSES, COLLAB_TYPES, DELETE_REQUEST_ENTITIES, FUNNELS, ITEM_KINDS, ROLES, SHIP_STATUSES, USAGE_RIGHTS } from "./domain/types";
 import { ASSET_ACTIONS, CONTENT_ACTIONS } from "./domain/content";
+import { normalizeMyPhone } from "./domain/whatsapp";
 import { MASTER_KEYS } from "./domain/master";
 import { CAMPAIGN_ACTIONS } from "./domain/campaign";
 import { isValidYmd } from "./domain/dates";
@@ -188,6 +189,20 @@ export const kolInputSchema = z.object({
   niches: z.array(text(40).min(1)).max(10).default([]),
   location: text(80).default(""),
   contact: text(120).default(""),
+  whatsapp: z
+    .string()
+    .trim()
+    .max(30)
+    .default("")
+    .transform((v, ctx) => {
+      if (!v) return "";
+      const n = normalizeMyPhone(v);
+      if (!n) {
+        ctx.addIssue({ code: "custom", message: "No. WhatsApp tidak sah. Contoh: 012-345 6789" });
+        return z.NEVER;
+      }
+      return n;
+    }),
   rate: money(),
   status: z.enum(KOL_STATUSES).default("Aktif"),
   remark: text(1000).default(""),
